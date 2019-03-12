@@ -18,10 +18,11 @@ def login(request):
     if request.method == 'GET':
         return render(request, "login.html")
     elif request.method == 'POST':
-        name, psw = request.POST['username'], request.POST['psw']
-        if get_or_none(User, name=name):
+        login, psw = request.POST['login'], request.POST['psw']
+        if get_or_none(User, login=login, psw=psw):
             # поставить куку
             # пустить в профиль
+            redirect('profile')
             pass
         return render(request, "login.html", {'message': 'У нас нет такого логина'})
 
