@@ -3,10 +3,6 @@ from django.shortcuts import render, redirect
 from hello.models import User
 
 
-def check_user_cookie(requst):
-    pass
-
-
 def get_or_none(classmodel, **kwargs):
     try:
         return classmodel.objects.get(**kwargs)
@@ -15,6 +11,8 @@ def get_or_none(classmodel, **kwargs):
 
 
 def login(request):
+    if get_or_none(User, logged_in_cookie=request.COOKIES.get('logged_in_status')):
+        redirect('profile')
     if request.method == 'GET':
         return render(request, "login.html")
     elif request.method == 'POST':
@@ -28,6 +26,8 @@ def login(request):
 
 
 def registration(request):
+    if get_or_none(User, logged_in_cookie=request.COOKIES.get('logged_in_status')):
+        redirect('profile')
     if request.method == 'GET':
         return render(request, "registration.html")
     elif request.method == 'POST':
@@ -41,7 +41,9 @@ def registration(request):
 
 
 def profile(request):
+    if get_or_none(User, logged_in_cookie=request.COOKIES.get('logged_in_status')):
         return render(request, "profile.html")
+    redirect('login')
 
 
 
