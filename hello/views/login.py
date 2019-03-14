@@ -21,7 +21,6 @@ def login(request):
             # поставить куку
             # пустить в профиль
             redirect('profile')
-            pass
         return render(request, "login.html", {'message': 'У нас нет такого логина'})
 
 
