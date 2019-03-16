@@ -18,14 +18,27 @@ def get_or_none(classmodel, **kwargs):
 def login(request):
     if get_or_none(User, logged_in_cookie=request.COOKIES.get('logged_in_cookie')):
         return render(request, "profile.html")
+
     if request.method == 'GET':
         return render(request, "login.html")
+
     elif request.method == 'POST':
         login_for_log, psw = request.POST['login'], request.POST['psw']
-        if get_or_none(User, login=login_for_log, psw=psw):
+        hash_psw = pbkdf2_sha256.encrypt(psw, rounds=200000, salt_size=16)
+
+        if get_or_none(User, login=login_for_log, psw=hash_psw):
+
             # поставить куку
             # пустить в профиль
-            return render(request, "profile.html")
+            u = User.objects.get(login=login_for_log, psw=hash_psw)
+            cookie = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(25))
+            u.logged_in_cookie = cookie
+            u.save()
+
+            response = render(request, "profile.html")  # django.http.HttpResponse
+            response.set_cookie(key='logged_in_cookie', value=cookie)
+            return response
+
         return render(request, "login.html", {'message': 'У нас нет такого логина'})
 
 

@@ -3,3 +3,4 @@ psycopg2==2.7.6.1
 django==2.1.4
 gunicorn==19.9.0
 django-heroku==0.3.1
+passlib==1.7.1
